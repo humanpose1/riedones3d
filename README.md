@@ -1,2 +1,3 @@
-# riedones3d
-python scripts to perform coin die clustering (performed on Riedones3D).
+# Riedones3D
+
+Some scripts to perform coin die clustering
