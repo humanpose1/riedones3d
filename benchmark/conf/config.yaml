@@ -1,0 +1,9 @@
+defaults: # for loading the default.yaml config
+  - data: ???
+  - registrator: ???
+
+
+num_workers: 1
+hydra:
+  run:
+    dir: outputs/${hydra.job.name}/${now:%Y-%m-%d_%H-%M-%S}

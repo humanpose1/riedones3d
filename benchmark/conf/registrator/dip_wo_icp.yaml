@@ -1,0 +1,25 @@
+# @package registrator
+class: deep_registration.DeepPatchRegistrationPipeline
+path_model: "/media/admincaor/DataHDD2To/mines/code/coin_die_recognition_v2/models/DIP/DIP_Liffre.pt"
+device: "cuda"
+max_norm: 0.5
+min_num_matches: 3
+num_points: 5000
+robust_estimator: "teaser"
+robust_estimator_params:
+  class: TeaserEstimator
+  noise_bound: 0.5
+  cbar2: 1
+  max_clique_time_limit: 1
+transform_params:
+  - transform: SaveOriginalPosId
+  - transform: GridSampling3D
+    params:
+      mode: "last"
+      size: 0.1
+      quantize_coords: True
+  - transform: AddOnes
+  - transform: AddFeatByKey
+    params:
+      add_to_x: True
+      feat_name: "ones"

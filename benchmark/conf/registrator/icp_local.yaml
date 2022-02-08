@@ -1,0 +1,22 @@
+# @package registrator
+class: base_registration.LocalRegistrator
+radius: 8
+transform_params:
+  - transform: SaveOriginalPosId
+  - transform: GridSampling3D
+    params:
+      mode: "last"
+      size: 0.1
+      quantize_coords: True
+icp_params:
+  class: BaseICP
+  mode: "plane"
+  num_iter: 10
+  stopping_criterion: 1e-3
+  max_dist: 0.1
+  pre_transform_source:
+    - transform: RadiusPatchExtractor
+      params:
+        radius: ${radius}
+        max_num: 10000
+  

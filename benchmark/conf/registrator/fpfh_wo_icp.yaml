@@ -1,0 +1,27 @@
+# @package registrator
+class: handcrafted_registrator.FPFHRegistrator
+radius: 0.5
+max_nn: 100
+feat_dim: 1
+max_norm: 0.5
+num_pojnts: 5000
+min_num_matches: 3
+
+robust_estimator_params:
+  class: TeaserEstimator
+  noise_bound: 0.5
+  cbar2: 1
+  max_clique_time_limit: 1
+  
+transform_params:
+  - transform: SaveOriginalPosId
+  - transform: GridSampling3D
+    params:
+      mode: "last"
+      size: 0.1
+      quantize_coords: True
+  - transform: AddOnes
+  - transform: AddFeatByKey
+    params:
+      add_to_x: True
+      feat_name: "ones"

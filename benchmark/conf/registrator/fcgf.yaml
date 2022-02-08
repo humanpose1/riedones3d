@@ -1,0 +1,42 @@
+# @package registrator
+class: deep_registration.DeepRegistrationPipeline
+path_model: "/media/admincaor/DataHDD2To/mines/code/deeppointcloud-benchmarks/outputs/benchmark/benchmark-MinkUNet_Fragment-20210429_193357/MinkUNet_Fragment.pt"
+device: "cuda"
+max_norm: 0.5
+min_num_matches: 3
+num_points: 5000
+transform_params:
+  - transform: SaveOriginalPosId
+  - transform: GridSampling3D
+    params:
+      mode: "last"
+      size: 0.1
+      quantize_coords: True
+  - transform: AddOnes
+  - transform: AddFeatByKey
+    params:
+      add_to_x: True
+      feat_name: "ones"
+
+robust_estimator_params:
+  class: TeaserEstimator
+  noise_bound: 0.5
+  cbar2: 1
+  max_clique_time_limit: 1
+
+icp_params:
+  class: BaseICP
+  mode: "plane"
+  num_iter: 10
+  stopping_criterion: 1e-3
+  max_dist: 0.1
+  pre_transform_source:
+    - transform: MultiRadiusPatchExtractor
+      params:
+        radius: 2
+        max_num: 1000
+  pre_transform_target:
+    - transform: MultiRadiusPatchExtractor
+      params:
+        radius: 4
+        max_num: 1000

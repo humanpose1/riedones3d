@@ -1,0 +1,31 @@
+# @package data
+task: registration
+class: testriedones3d.TestLocalRiedones3DDataset
+name: LocalLiffre
+dataroot: "/media/admincaor/DataHDD2To/mines/code/deeppointcloud-benchmarks/data"
+first_subsampling: 0.02
+max_size_block: 5
+min_size_block: 4
+max_dist_overlap: 0.1
+min_points: 2000
+num_pos_pairs: 30000
+num_points: 5000
+ransac_thresh: 0.02
+noise_bound_teaser: 0.5
+tau_1: 0.1
+tau_2: 0.05
+trans_thresh: 0.1
+rot_thresh: 5
+use_fps: False
+test_transform:
+  - transform: SaveOriginalPosId
+  - transform: XYZFeature
+    params:
+      add_x: True
+      add_y: True
+      add_z: True
+  - transform: GridSampling3D
+    params:
+      size: ${data.first_subsampling}
+      quantize_coords: True
+      mode: "last"
