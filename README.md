@@ -66,7 +66,7 @@ python scripts/mesh2pcd.py --path_coin mymesh.stl
 
 It will register the pair and it will also compute the histogram of distance. It displays the results with open3D.
 ```
-python scripts/whole_pipeline.py --path ../coin_die_recognition/results/create_unsupervised_dataset/Revers/L0014R.ply ../coin_die_recognition/results/create_unsupervised_dataset/Revers/L0013R.ply -m /media/admincaor/DataHDD2To/mines/code/deeppointcloud-benchmarks/outputs/benchmark/benchmark-MinkUNet_Fragment-20210429_193357/MinkUNet_Fragment --angle 0 --trans 20  --clf classifiers/logistic_revers_pc.pkl --path_scaler classifiers/mean_std_pc_edge.json --est ransac
+python scripts/whole_pipeline.py --path COIN1.ply COIN2.ply -m PATH OF THE MODEL --angle 0 --trans 20  --clf classifiers/logistic_part_droits_sym.pkl --path_scaler classifiers/mean_std.json --est ransac
 ```
 
 
@@ -75,12 +75,12 @@ python scripts/whole_pipeline.py --path ../coin_die_recognition/results/create_u
 ### Compute the features
 First you need to compute the features:
 ```
-python scripts/compute_feature.py --path_coin ../coin_die_recognition/results/create_unsupervised_dataset/Droits --list_coin Coins_et_Monnaies_Droits_all.csv -m /media/admincaor/DataHDD2To/mines/code/deeppointcloud-benchmarks/outputs/benchmark/benchmark-MinkUNet_Fragment-20210429_193357/MinkUNet_Fragment --path_output results --name Droits_v2
+python scripts/compute_feature.py --path_coin DROITS --list_coin Coins_et_Monnaies_Droits_all.csv -m PATH OF THE MODEL --path_output results --name Droits
 ```
 It takes few minutes to compute every features
 ### compute a pair similarity comparison
 ```
-python scripts/compute_transformation.py --path_feature results/Droits_v2/feature/  --path_output results/Droits_v2/transformation --list_coin Coins_et_Monnaies_Droits_all.csv --num_points 5000 --est teaser --clf classifiers/logistic_part_droits_sym.pkl --path_scaler classifiers/mean_std.json --n_jobs 8 --sym
+python scripts/compute_transformation.py --path_feature results/Droits/feature/  --path_output results/Droits/transformation --list_coin Coins_et_Monnaies_Droits_all.csv --num_points 5000 --est ransac --clf classifiers/logistic_part_droits_sym.pkl --path_scaler classifiers/mean_std.json --n_jobs 8 --sym
 ```
 
 `--sym` means the histogram is symmetric.
@@ -95,7 +95,7 @@ it will generate two files:
 
 We compute the graph of similarity between the pairs of coins
 ```
-python scripts/compute_graph_from_hist.py --path_histogram results/Droits_v2/transformation/hist.npy -m classifiers/logistic_part_droits_sym.pkl -o results/Droits_v2/graph --path_scaler classifiers/mean_std.json
+python scripts/compute_graph_from_hist.py --path_histogram results/Droits/transformation/hist.npy -m classifiers/logistic_part_droits_sym.pkl -o results/Droits/graph --path_scaler classifiers/mean_std.json
 ```
 ### Clean the graph using graph visualizer
 
