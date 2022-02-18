@@ -1,6 +1,8 @@
 # Riedones3D
+![Presentation of Riedones3D](screenshot/presentation.png "Presentation of Riedones3D")
 
-It is the code to perform coin die recognition and die clustering
+
+It is the code to perform coin die recognition and die clustering. More information on this [article](https://arxiv.org/abs/2109.15033).
 
 ## Installation
 requirements:
@@ -36,23 +38,32 @@ create a new environnement (for example using conda)
  ```
 pip install pyrender
 pip install trimesh
+pip install networkx
 pip install torch==1.8.1
 pip install torch-scatter -f https://data.pyg.org/whl/torch-1.8.1+cu102.html
 pip install torch-sparse -f https://data.pyg.org/whl/torch-1.8.1+cu102.html
 pip install torch-cluster -f https://data.pyg.org/whl/torch-1.8.1+cu102.html
 pip install torch-spline-conv -f https://data.pyg.org/whl/torch-1.8.1+cu102.html
 pip install torch-geometric==1.7.2
-pip install git+https://github.com/nicolas-chaulet/torch-points3d.git@e090530eab5e3e5798c5abc764088d6a1f9827c3
+pip install git+https://github.com/humanpose1/deeppointcloud-benchmarks.git@registration/riedones3d
 ```
-install [minkowski engine](https://github.com/NVIDIA/MinkowskiEngine)
+install [minkowski engine](https://github.com/NVIDIA/MinkowskiEngine) (it works with version 0.5.3)
 ```
 apt-get install build-essential python3-dev libopenblas-dev
-pip install -U git+https://github.com/NVIDIA/MinkowskiEngine@9f81ae66b33b883cd08ee4f64d08cf633608b118 --no-deps
+pip install -U git+https://github.com/NVIDIA/MinkowskiEngine --no-deps
  ```
  install [torch-sparse](https://github.com/mit-han-lab/torchsparse)
  ```
  apt-get install libsparsehash-dev
  pip install --upgrade git+https://github.com/mit-han-lab/torchsparse.git@v1.4.0
+ ```
+ 
+ install [TEASER++](https://github.com/MIT-SPARK/TEASER-plusplus)
+ ```
+git clone https://github.com/MIT-SPARK/TEASER-plusplus.git
+cd TEASER-plusplus && mkdir build && cd build
+cmake -DTEASERPP_PYTHON_VERSION=3.8 .. && make teaserpp_python
+cd python && pip install .
  ```
 
 ## Preprocessing
@@ -63,16 +74,18 @@ python scripts/mesh2pcd.py --path_coin mymesh.stl
 ```
 
 ## Register a pair of coin
-
+![Pipeline](screenshot/pipeline.png "Pipeline to registrate a coin")
 It will register the pair and it will also compute the histogram of distance. It displays the results with open3D.
+
 ```
 python scripts/whole_pipeline.py --path COIN1.ply COIN2.ply -m PATH OF THE MODEL --angle 0 --trans 20  --clf classifiers/logistic_part_droits_sym.pkl --path_scaler classifiers/mean_std.json --est ransac
 ```
 
 
 ## Coin die Clustering
-
+![Pipeline](screenshot/deep.png "Compute feature for registration")
 ### Compute the features
+
 First you need to compute the features:
 ```
 python scripts/compute_feature.py --path_coin DROITS --list_coin Coins_et_Monnaies_Droits_all.csv -m PATH OF THE MODEL --path_output results --name Droits
@@ -80,7 +93,7 @@ python scripts/compute_feature.py --path_coin DROITS --list_coin Coins_et_Monnai
 It takes few minutes to compute every features
 ### compute a pair similarity comparison
 ```
-python scripts/compute_transformation.py --path_feature results/Droits/feature/  --path_output results/Droits/transformation --list_coin Coins_et_Monnaies_Droits_all.csv --num_points 5000 --est ransac --clf classifiers/logistic_part_droits_sym.pkl --path_scaler classifiers/mean_std.json --n_jobs 8 --sym
+python scripts/compute_transformation.py --path_feature results/Droits/feature/  --path_output results/Droits/transformation --list_coin Coins_et_Monnaies_Droits_all.csv --num_points 5000 --est ransac --n_jobs 8 --sym
 ```
 
 `--sym` means the histogram is symmetric.
@@ -104,7 +117,33 @@ You can select links nodes, remove/add links, search for a node cluster the resu
 TODO: Tutorial about how to use graph visualizer
 
 ### generate images and 3D models
-TODO: Tutorial for this script
+You can use the script render_coins in order to render images (require trimesh, pyrender and open3d).
+```
+python scripts/render_coins.py --path_coin PATH COIN --path_tr PATH transfo npy --path_graph PATH GRAPH json --path_output PATH OUTPUT -t THRESH --clustered --save-3d
+```
+`--path_coin` is the path of directories containing the coins. WARNING: It must be meshes in STL format.
+`--path_tr` is the path of the file containing the transformations. It is a npy format `transfo.npy`
+`--path_graph` is the path containing the graph. It is a json format `graph.json`
+`--path_output` path where the 3d data and images will be stored.
+`-t` threshold of the graph for the clustering (see the effect in the graph visualizer)
+`--clustered` to save file by folder
+`--save_3d` save 3d files (if you do not want to save the 3d files, use instead `--no-save-3d`)
+
+
+If you find this repo helpful, please cite:
+```
+@inproceedings {horache2021riedones3d,
+booktitle = {Eurographics Workshop on Graphics and Cultural Heritage},
+editor = {Hulusic, Vedad and Chalmers, Alan},
+title = {{Riedones3D: a Celtic Coin Dataset for Registration and Fine-grained Clustering}},
+author = {Horache, Sofiane and Deschaud, Jean-Emmanuel and Goulette, François and Gruel, Katherine and Lejars, Thierry and Masson, Olivier},
+year = {2021},
+publisher = {The Eurographics Association},
+ISBN = {978-3-03868-141-0},
+pages = {83-92},
+DOI = {10.2312/gch.20211410}
+}
+```
 
 
 

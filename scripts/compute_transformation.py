@@ -36,13 +36,13 @@ def parse_args():
     parser = argparse.ArgumentParser("compute transformations"
                                      "it is a bit naive because it will compare every pairs")
     parser.add_argument('--path_feature', dest='path_feature',
-                        help='path of the feature (Data(feat=..., pos=...))',
+                        help='path of the feature .pt files (Data(feat=..., pos=...))',
                         type=str)
     parser.add_argument('--path_output', dest='path_output',
                         help='path of the output',
                         type=str)
     parser.add_argument('--list_coin', dest='list_coin',
-                        help='list containing the name of the coin',
+                        help='list containing the name of the coin a csv',
                         type=str)
     parser.add_argument('--est', dest='robust_estimator',
                         help='robust estimator (either ransac, fgr or teaser) ',
@@ -50,10 +50,6 @@ def parse_args():
     parser.add_argument('--num_points', dest='num_points',
                         help='number of points for estimation ',
                         type=int, default=5000)
-    parser.add_argument('--clf', dest="path_clf", help="path of the classifier")
-    parser.add_argument('--path_scaler', dest='path_scaler',
-                        help='path of mean and std',
-                        type=str)
     parser.add_argument('--n_jobs', dest="n_jobs", help="number of job for parallel computing", type=int, default=1)
     parser.add_argument('--sym', dest='sym',
                         help='symetric histogram',
