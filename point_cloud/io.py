@@ -33,8 +33,7 @@ def read_mesh_vertices_ply(filename):
 
     return vertices, normals
 
-def read_mesh_vertices_stl(filename):
-
+def read_mesh_vertices(filename):
     fuze_trimesh = trimesh.load(filename)
     vertices = fuze_trimesh.vertices
     normals = fuze_trimesh.vertex_normals
@@ -46,7 +45,7 @@ def read_pcd(filename):
     if(ext.lower() == "ply"):
         vertices, normals = read_mesh_vertices_ply(filename)
     elif (ext.lower() == "stl"):
-        vertices, normals = read_mesh_vertices_stl(filename)
+        vertices, normals = read_mesh_vertices(filename)
     else:
         raise NotImplementedError
     pos = torch.from_numpy(vertices)

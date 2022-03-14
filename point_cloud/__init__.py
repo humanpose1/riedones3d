@@ -1,7 +1,3 @@
-try:
-    import handcrafted_descriptor
-except ImportError:
-    pass
 import importlib
 from omegaconf import OmegaConf
 import sys

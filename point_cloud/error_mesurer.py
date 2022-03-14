@@ -51,7 +51,7 @@ class BaseDistance(object):
                  grid_size_source=0.05,
                  grid_size_target=0.1,
                  thresh_normal_max=1,
-                 thresh_normal_min=0,
+                 thresh_normal_min=-1,
                  transfo=None,
                  bins=70,
                  rang=(0, 1),
@@ -81,7 +81,6 @@ class BaseDistance(object):
 
     def _apply_mask(self, data, dist, match):
         mask = torch.ones(len(data.pos)).bool()
-        
         cloned_data = data.clone()
         if(self.max_dist > 0):
             mask1 = match2mask(match, len(data.pos))
@@ -89,7 +88,6 @@ class BaseDistance(object):
         
         mask2 = normal_mask(data.pos, data.norm, self.thresh_normal_min, self.thresh_normal_max)
         mask = torch.logical_and(mask, mask2)
-        
         
         cloned_data.pos = data.pos[mask]
         cloned_data.norm = data.norm[mask]
@@ -112,24 +110,28 @@ class BaseDistance(object):
         t = self._preprocess(target, self.grid_sampling_target)
         match = compute_matches(s.pos.float(), t.pos.float(), self.max_dist)
         dist = self._compute(s, t, match)
-        
         s, dist = self._apply_mask(s, dist, match)
         return s, t, dist
 
-    def compute_histogram(self, source, target):
-        _, _, dist_map = self.compute(source, target)
+    def get_histogram(self, dist_map):
         hist, bin_edges = np.histogram(
             dist_map.detach().numpy().ravel(),
             bins=self.bins,
             range=self.rang,
             density=self.is_density)
+        return hist, bin_edges
+
+    def compute_histogram(self, source, target):
+        _, _, dist_map = self.compute(source, target)
+        dist_map = dist_map.detach().numpy().ravel()
+        hist, bin_edges = self.get_histogram(dist_map)
         return hist, dist_map, bin_edges
 
     def compute_symmetric_histogram(self, source, target):
 
-        hist_st, _, _ = self.compute_histogram(source, target)
-        hist_ts, _, _ = self.compute_histogram(target, source)
-        return (hist_st + hist_ts) * 0.5
+        hist_st, dist_map, bin_edges = self.compute_histogram(source, target)
+        hist_ts, dist_map, bin_edges = self.compute_histogram(target, source)
+        return (hist_st + hist_ts) * 0.5, dist_map, bin_edges
 
     def visualize_color(self, source, target):
         s, t, dist_map = self.compute(source, target)
@@ -146,7 +148,7 @@ class PCDistance(BaseDistance):
                  plane_distance=False,
                  transfo=None,
                  thresh_normal_max=1,
-                 thresh_normal_min=0,
+                 thresh_normal_min=-1,
                  grid_size_source=0.05,
                  grid_size_target=0.1,
                  bins=70,

@@ -6,14 +6,14 @@ import os.path as osp
 import pathlib
 import glob
 
-from point_cloud.io import read_mesh_vertices_stl
+from point_cloud.io import read_mesh_vertices
 
 def parse_args():
     parser = argparse.ArgumentParser("save coins in point cloud in ply format")
 
     parser.add_argument('--path_coin',
                         dest='path_coin',
-                        help='path cointaining the coins in stl',
+                        help='path cointaining the coins in stl or ply',
                         nargs='+')
     parser.add_argument('-o',
                         dest='path_output',
@@ -28,7 +28,7 @@ def parse_args():
 def main():
     args = parse_args()
     for path_coin in args.path_coin:
-        vertices, normals = read_mesh_vertices_stl(path_coin)
+        vertices, normals = read_mesh_vertices(path_coin)
         pcd = open3d.geometry.PointCloud()
         pcd.points = open3d.utility.Vector3dVector(vertices)
         pcd.normals = open3d.utility.Vector3dVector(normals)
