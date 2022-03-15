@@ -123,8 +123,8 @@ class BaseDistance(object):
 
     def compute_histogram(self, source, target):
         _, _, dist_map = self.compute(source, target)
-        dist_map = dist_map.detach().numpy().ravel()
-        hist, bin_edges = self.get_histogram(dist_map)
+        dist_map = dist_map.detach().numpy()
+        hist, bin_edges = self.get_histogram(dist_map.ravel())
         return hist, dist_map, bin_edges
 
     def compute_symmetric_histogram(self, source, target):

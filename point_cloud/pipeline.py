@@ -16,13 +16,17 @@ from point_cloud.transforms import MultiRadiusPatchExtractor
 from point_cloud.error_mesurer import PCDistance
 from point_cloud.robust_estimator import RobustEstimator
 from point_cloud.ICP import BaseICP
+from point_cloud.visu import colorizer_v2
+
+from point_cloud.pipeline_visualizer import BaseVisualizer
 
 from torch_geometric.transforms import Compose 
 
 
 class BasePipeline(object):
 
-    def __init__(self):
+    def __init__(self, visualizer: BaseVisualizer = BaseVisualizer()):
+        self.visualiser = visualizer
         self.init_output()
 
     def init_output(self):
@@ -59,11 +63,13 @@ class BasePipeline(object):
 class BaseRiedonesPipeline(BasePipeline):
 
     def __init__(self, estimator: RobustEstimator,
+                 visualizer: BaseVisualizer = BaseVisualizer(),
                  num_points: int = 5000,
                  sym: bool = False):
         """
         Pipeline adapted for Riedones3D
         """
+        BasePipeline.__init__(self, visualizer)
         self.sym = sym
         self.num_points = num_points
         self.estimator = estimator
@@ -73,7 +79,7 @@ class BaseRiedonesPipeline(BasePipeline):
         self.init_icp()
         self.init_registrator()
         self.init_distance_computer()
-        self.init_output()
+        
 
     def init_icp(self):
         self.icp = BaseICP(
@@ -108,10 +114,15 @@ class BaseRiedonesPipeline(BasePipeline):
     def compute_pair(self, path_source, path_target):
         name = self.get_name(path_source, path_target)
         data_s, data_t = self.read_point_cloud(path_source, path_target)
+        self.visualiser.visualize([data_s, data_t], name=name, centered=True, folder="init")
         T_f = self.registrate(data_s, data_t)
         data_s.pos = data_s.pos @ T_f[:3, :3].T + T_f[:3, 3]
         data_s.norm = data_s.norm @ T_f[:3, :3].T
-        hist, _ = self.compute_hist(data_s, data_t)
+        self.visualiser.visualize([data_s, data_t], name, centered=False, folder="registration")
+        hist, dist_map = self.compute_hist(data_s, data_t)
+        data_s.colors = torch.from_numpy(colorizer_v2(dist_map))
+        self.visualiser.visualize([data_s], name=name, centered=False, folder="c2c")
+        self.visualiser.visualize_hist(hist, name=name, folder="hist")
         return T_f.cpu().numpy(), hist, name
 
 
@@ -123,7 +134,6 @@ class PretrainedRiedonesPipeline(BaseRiedonesPipeline):
             transform=None,
             icp=self.icp,
             robust_estimator=self.estimator,
-            noise_bound_teaser=0.1,
             verbose=False,
             min_num_matches=3,
             num_points=self.num_points)
