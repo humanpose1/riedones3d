@@ -57,7 +57,6 @@ class TestICP(unittest.TestCase):
         target = read_pcd(os.path.join(DIR_PATH, "data/L775D.ply"))
         source.pos = source.pos - source.pos.mean(0)
         target.pos = target.pos - target.pos.mean(0)
-        print(source)
         rand_theta = torch.rand(3) * 3.14 / 12
         rand_theta[0] = 0
         rand_theta[1] = 0
@@ -67,7 +66,6 @@ class TestICP(unittest.TestCase):
         target.pos = target.pos @ R.T
         icp = BaseICP(mode="plane", num_iter=100, stopping_criterion=1e-3, max_dist=0.1)
         Id = torch.eye(4)
-        print(T)
         T_est = icp(source, target)
 
         err = torch.norm(T @ torch.inverse(T_est) - Id)

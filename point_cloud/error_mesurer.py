@@ -115,7 +115,7 @@ class BaseDistance(object):
 
     def get_histogram(self, dist_map):
         hist, bin_edges = np.histogram(
-            dist_map.detach().numpy().ravel(),
+            dist_map,
             bins=self.bins,
             range=self.rang,
             density=self.is_density)
