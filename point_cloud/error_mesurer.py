@@ -137,7 +137,7 @@ class BaseDistance(object):
         s, t, dist_map = self.compute(source, target)
         final_color = colorizer_v2(dist_map.detach().cpu().numpy())
         pcd_s = torch2o3d(s)
-        pcd_s.colors = open3d.utility.Vector3dVector(final_color)
+        pcd_s.colors = open3d.utility.Vector3dVector(final_color) 
         open3d.visualization.draw_geometries([pcd_s])
 
 

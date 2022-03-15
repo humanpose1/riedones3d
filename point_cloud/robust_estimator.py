@@ -16,6 +16,17 @@ def instantiate_robust_estimator(params):
     instantiated = cls(**params)
     return instantiated
 
+def build_estimator(name_estimator, *args, **kwargs):
+
+    if name_estimator == "teaser":
+        return TeaserEstimator(*args, **kwargs)
+    elif name_estimator == "fgr":
+        return SimpleFGREstimator()
+    elif name_estimator == "ransac":
+        return RansacEstimator(*args, **kwargs)
+    else:
+        raise NotImplementedError("the estimator has not been implemented")
+
 
 class RobustEstimator(object):
 

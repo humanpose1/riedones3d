@@ -11,6 +11,7 @@ from point_cloud.robust_estimator import instantiate_robust_estimator
 from point_cloud.robust_estimator import SimpleFGREstimator
 from point_cloud.robust_estimator import TeaserEstimator
 from point_cloud.robust_estimator import RansacEstimator
+from point_cloud.robust_estimator import build_estimator
 
 
 ROOT = os.path.join(os.path.dirname(os.path.realpath(__file__)), "..")
@@ -52,6 +53,17 @@ class TestRobustEstimator(unittest.TestCase):
 
     def test_ransac(self):
         estimator = RansacEstimator(distance_threshold=1e-8)
+        test_estimator(estimator)
+
+    def test_simple_build_estimator(self):
+        estimator = build_estimator("fgr")
+        test_estimator(estimator)
+
+    def test_complex_build_estimator(self):
+        estimator = build_estimator("fgr",
+                                    noise_bound=1e-5,
+                                    distance_threshold=1e-8,
+        )
         test_estimator(estimator)
 
     def test_instantiation(self):

@@ -148,13 +148,15 @@ class OnlineRiedonesPipeline(BaseRiedonesPipeline):
 
     def __init__(self, estimator: RobustEstimator,
                  path_model: str,
+                 visualizer: BaseVisualizer = BaseVisualizer(),
                  num_points: int = 5000,
                  sym: bool = False):
         """
         compute Features, transformation and then the histogram
         """
         self.path_model = path_model
-        BaseRiedonesPipeline.__init__(self, estimator=estimator, num_points=num_points, sym=sym)
+        BaseRiedonesPipeline.__init__(
+            self, estimator=estimator, visualizer=visualizer, num_points=num_points, sym=sym)
 
     def init_registrator(self):
         transform = Compose(
