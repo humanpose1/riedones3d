@@ -40,6 +40,7 @@ class Open3DVisualizer(BaseVisualizer):
         BaseVisualizer.__init__(self, list_colors, translate, **kwargs)
 
     def visualize(self, list_data, name: str = "", centered: bool = False, **kwargs):
+        print(name)
         list_pcd = self.torch2o3d(list_data)
         if centered:
             list_pcd = [pcd.translate(pcd.get_center()) for pcd in list_pcd]
