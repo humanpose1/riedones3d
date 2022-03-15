@@ -104,25 +104,31 @@ class BaseRiedonesPipeline(BasePipeline):
         assert self.registrator is not None
         return self.registrator.registrate(source, target)
 
-    def compute_hist(self, data_s, data_t):
-        if(self.sym):
-            hist, dist_map, _ = self.distance_computer.compute_symmetric_histogram(data_s, data_t)
-        else:
-            hist, dist_map, _ = self.distance_computer.compute_histogram(data_s, data_t)
-        return hist, dist_map
-
     def compute_pair(self, path_source, path_target):
+
+        # init 
         name = self.get_name(path_source, path_target)
         data_s, data_t = self.read_point_cloud(path_source, path_target)
         self.visualiser.visualize([data_s, data_t], name=name, centered=True, folder="init")
+
+        # registration
         T_f = self.registrate(data_s, data_t)
         data_s.pos = data_s.pos @ T_f[:3, :3].T + T_f[:3, 3]
         data_s.norm = data_s.norm @ T_f[:3, :3].T
         self.visualiser.visualize([data_s, data_t], name, centered=False, folder="registration")
-        hist, dist_map = self.compute_hist(data_s, data_t)
-        data_s.colors = torch.from_numpy(colorizer_v2(dist_map))
+
+        # c2c distance
+        data_s, data_t, dist_map = self.distance_computer.compute(data_s, data_t)
+        data_s.dist = torch.from_numpy(colorizer_v2(dist_map))
         self.visualiser.visualize([data_s], name=name, centered=False, folder="c2c")
-        self.visualiser.visualize_hist(hist, name=name, folder="hist")
+        hist, bin_edges = self.distance_computer.get_histogram(dist_map)
+        if self.sym:
+            data_t, data_s, dist_map = self.distance_computer.compute(data_t, data_s)
+            hist_ts, _ = self.distance_computer.get_histogram(dist_map)
+            hist = 0.5 * (hist + hist_ts)
+
+        self.visualiser.visualize_hist(hist, bin_edges, name=name, folder="hist")
+        
         return T_f.cpu().numpy(), hist, name
 
 

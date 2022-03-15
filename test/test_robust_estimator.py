@@ -60,11 +60,13 @@ class TestRobustEstimator(unittest.TestCase):
         test_estimator(estimator)
 
     def test_complex_build_estimator(self):
-        estimator = build_estimator("fgr",
-                                    noise_bound=1e-5,
-                                    distance_threshold=1e-8,
+        for name in ["fgr", "ransac", "teaser"]:
+            estimator = build_estimator(name,
+                                        noise_bound=1e-5,
+                                        distance_threshold=1e-8,
         )
         test_estimator(estimator)
+    
 
     def test_instantiation(self):
         string = """
