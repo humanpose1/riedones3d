@@ -42,6 +42,7 @@ pour en traiter plusieurs:
 python scripts/mesh2pcd.py  --path_coin /media/sofiane/DATA/sofiane/data/Part_droits_Riedones3D/*.STL -o /media/sofiane/DATA/sofiane/data/PLY/
 ```
 NOTE: le *.STL permet de selectionner tous les STL d'un dossier
+ATTENTION: les monnaies ou autres motifs doivent être orienté selon l'axe z. 
 
 ## Comparaison deux à deux
 6) Supposons nous voulons savoir si deux monnaies ont été frappées avec le même coin. le scripts `whole_pipeline.py` permet de voir toutes les étapes de la comparaison.
