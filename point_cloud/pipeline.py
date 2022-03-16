@@ -124,6 +124,7 @@ class BaseRiedonesPipeline(BasePipeline):
         self.visualiser.visualize([data_s, data_t], name, centered=False, folder="registration")
 
         # c2c distance
+        print(data_s, data_t)
         data_s, data_t, dist_map = self.distance_computer.compute(data_s, data_t)
         data_s.dist = torch.from_numpy(colorizer_v2(dist_map))
         self.visualiser.visualize([data_s], name=name, centered=False, folder="c2c")

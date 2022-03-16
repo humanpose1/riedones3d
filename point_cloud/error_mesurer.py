@@ -43,6 +43,12 @@ def match2mask(match, len_ps):
     mask[match[:, 0]] = True
     return mask
 
+def apply_mask(data, mask):
+    cloned_data = data.clone()
+    for k in data.keys:
+        if len(data[k]) == len(mask):
+            cloned_data[k] = data[k][mask]
+    return cloned_data
 
 class BaseDistance(object):
 
@@ -81,16 +87,14 @@ class BaseDistance(object):
 
     def _apply_mask(self, data, dist, match):
         mask = torch.ones(len(data.pos)).bool()
-        cloned_data = data.clone()
+        
         if(self.max_dist > 0):
             mask1 = match2mask(match, len(data.pos))
             mask = torch.logical_and(mask, mask1)
         
         mask2 = normal_mask(data.pos, data.norm, self.thresh_normal_min, self.thresh_normal_max)
         mask = torch.logical_and(mask, mask2)
-        
-        cloned_data.pos = data.pos[mask]
-        cloned_data.norm = data.norm[mask]
+        cloned_data = apply_mask(data, mask)
         new_dist = dist[mask]
         return cloned_data, new_dist
 

@@ -60,7 +60,8 @@ def main():
     pipeline = OnlineRiedonesPipeline(estimator=estimator,
                                       path_model=args.path_model,
                                       visualizer=visualizer,
-                                      num_points=args.num_points)
+                                      num_points=args.num_points,
+                                      sym=True)
     clf = HistClassifier(args.path_clf, args.path_scaler)
     pipeline.compute_all(list_path)
     clf.compute_graph(pipeline.get_dico_histogram())
