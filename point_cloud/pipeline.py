@@ -65,6 +65,25 @@ class BasePipeline(object):
         np.save(osp.join(path_output, "transfo.npy"), self.list_transfo)
         np.save(osp.join(path_output, "hist.npy"), self.list_hist)
 
+class ParallelPipeline(BasePipeline):
+
+    def __init__(self, pipeline: BasePipeline, visualizer: BaseVisualizer = BaseVisualizer(), n_jobs: int = 1):
+        BasePipeline.__init__(self, visualizer)
+        self.pipeline = pipeline
+        self.n_jobs = n_jobs
+
+    def compute_pair(self, path_source, path_target):
+        return self.pipeline.compute_pair(path_source, path_target)
+
+    def compute_all(self, list_path):
+        res = Parallel(n_jobs=self.n_jobs)(
+            delayed(self.compute_pair)(list_path[i], list_path[j])
+            for i in range(len(list_path)) for j in range(i+1, len(list_path))
+        )
+        for T_f, hist, name in res:
+            self.list_transfo[name] = T_f
+            self.list_hist[name] = hist
+
 
 class BaseRiedonesPipeline(BasePipeline):
 
@@ -124,7 +143,6 @@ class BaseRiedonesPipeline(BasePipeline):
         self.visualiser.visualize([data_s, data_t], name, centered=False, folder="registration")
 
         # c2c distance
-        print(data_s, data_t)
         data_s, data_t, dist_map = self.distance_computer.compute(data_s, data_t)
         data_s.dist = torch.from_numpy(colorizer_v2(dist_map))
         self.visualiser.visualize([data_s], name=name, centered=False, folder="c2c")
