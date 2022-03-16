@@ -3,7 +3,9 @@ import glob
 
 from point_cloud.robust_estimator import build_estimator
 from point_cloud.pipeline_visualizer import Open3DVisualizer
+from point_cloud.pipeline_visualizer import PyRenderVisualizer
 from point_cloud.pipeline import OnlineRiedonesPipeline
+from point_cloud.classifier import HistClassifier
 
 def parse_args():
 
@@ -29,6 +31,9 @@ def parse_args():
     parser.add_argument('--est', dest='robust_estimator',
                         help='robust estimator (either ransac, fgr or teaser) ',
                         type=str, default="teaser")
+    parser.add_argument('--path_output', dest='path_output',
+                        help='path of the output (if None it display online)',
+                        type=str, default=None)
     
     args = parser.parse_args()
     return args
@@ -48,13 +53,17 @@ def main():
                                 distance_threshold=0.5,
                                 num_iterations=10000
     )
-    visualizer = Open3DVisualizer(translate=args.trans)
+    if args.path_output is None:
+        visualizer = Open3DVisualizer(translate=args.trans)
+    else:
+        visualizer = PyRenderVisualizer(path_output=args.path_output, translate=args.trans)
     pipeline = OnlineRiedonesPipeline(estimator=estimator,
                                       path_model=args.path_model,
                                       visualizer=visualizer,
                                       num_points=args.num_points)
     clf = HistClassifier(args.path_clf, args.path_scaler)
     pipeline.compute_all(list_path)
+    clf.compute_graph(pipeline.get_dico_histogram())
 
 if __name__ == "__main__":
     main()

@@ -33,6 +33,12 @@ class BasePipeline(object):
         self.list_transfo = dict()
         self.list_hist = dict()
 
+    def get_dico_histogram(self):
+        return self.list_hist
+
+    def get_dico_transformation(self):
+        return self.list_transfo
+
     def compute_pair(self, path_source, path_target):
         raise NotImplementedError("implement pair computation")
 
