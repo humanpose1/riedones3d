@@ -8,7 +8,9 @@ import numpy as np
 
 from point_cloud.robust_estimator import build_estimator
 from point_cloud.pipeline_visualizer import PyRenderVisualizer
+from point_cloud.pipeline_visualizer import BaseVisualizer
 from point_cloud.pipeline import PretrainedRiedonesPipeline
+from point_cloud.pipeline import ParallelPipeline
 
 def generate_list_path(directory, dataframe):
 
