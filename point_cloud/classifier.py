@@ -34,7 +34,7 @@ class HistClassifier:
 
     def __init__(self, path_model: str, path_scaler: str):
         self.model = joblib.load(path_model)
-        self.mean, self.std = unpack_scaler(args.path_scaler)
+        self.mean, self.std = unpack_scaler(path_scaler)
         self.init_graph()
 
     def init_graph(self):
@@ -49,12 +49,12 @@ class HistClassifier:
             print(name_source, name_target, prob)
 
     def save_graph(self, path_output):
-    """
-    a networkx graph
-    """
-    data = nx.readwrite.json_graph.node_link_data(self.graph)
-    if(not os.path.exists(path_output)):
-        pathlib.Path(path_output).mkdir(parents=True, exist_ok=True)
-    with open(osp.join(path_output, 'graph.json'), 'w') as f:
-        json.dump(data, f)
+        """
+        a networkx graph
+        """
+        data = nx.readwrite.json_graph.node_link_data(self.graph)
+        if(not os.path.exists(path_output)):
+            pathlib.Path(path_output).mkdir(parents=True, exist_ok=True)
+        with open(osp.join(path_output, 'graph.json'), 'w') as f:
+            json.dump(data, f)
 

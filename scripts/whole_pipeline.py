@@ -48,11 +48,12 @@ def main():
                                 distance_threshold=0.5,
                                 num_iterations=10000
     )
-    visualizer = Open3DVisualizer()
+    visualizer = Open3DVisualizer(translate=args.trans)
     pipeline = OnlineRiedonesPipeline(estimator=estimator,
                                       path_model=args.path_model,
                                       visualizer=visualizer,
                                       num_points=args.num_points)
+    clf = HistClassifier(args.path_clf, args.path_scaler)
     pipeline.compute_all(list_path)
 
 if __name__ == "__main__":
