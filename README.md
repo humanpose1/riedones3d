@@ -65,6 +65,9 @@ cd TEASER-plusplus && mkdir build && cd build
 cmake -DTEASERPP_PYTHON_VERSION=3.8 .. && make teaserpp_python
 cd python && pip install .
  ```
+ 
+## Dataset
+The Riedones3D dataset is available on the [website](https://npm3d.fr/coins-riedones3d).
 
 ## Preprocessing
 As input, we need point cloud in ply format. We propose a simple script to convert from stl to ply with normals(if you already have point cloud in ply, you do not need this step).
@@ -76,11 +79,16 @@ python scripts/mesh2pcd.py --path_coin mymesh.stl
 ## Register a pair of coin
 ![Pipeline](screenshot/pipeline.png "Pipeline to registrate a coin")
 It will register the pair and it will also compute the histogram of distance. It displays the results with open3D.
+The following script shows the Pairwise similarity estimation.
 
 ```
 python scripts/whole_pipeline.py --path COIN1.ply COIN2.ply -m PATH OF THE MODEL --angle 0 --trans 20  --clf classifiers/logistic_part_droits_sym.pkl --path_scaler classifiers/mean_std.json --est ransac
 ```
-
+ You can download the model [here](https://cloud.mines-paristech.fr/index.php/s/iRIuRAD48PjIIuf). 
+ <details>
+<summary>The password is:</summary>
+ !riedones3D
+</details>
 
 ## Coin die Clustering
 ![Pipeline](screenshot/deep.png "Compute feature for registration")
@@ -90,7 +98,8 @@ First you need to compute the features:
 ```
 python scripts/compute_feature.py --path_coin DROITS --list_coin Coins_et_Monnaies_Droits_all.csv -m PATH OF THE MODEL --path_output results --name Droits
 ```
-It takes few minutes to compute every features
+It takes few minutes to compute every features.
+Then we can estimate the transformation
 ### compute a pair similarity comparison
 ```
 python scripts/compute_transformation.py --path_feature results/Droits/feature/  --path_output results/Droits/transformation --list_coin Coins_et_Monnaies_Droits_all.csv --num_points 5000 --est ransac --n_jobs 8 --sym
@@ -122,12 +131,18 @@ You can use the script render_coins in order to render images (require trimesh, 
 python scripts/render_coins.py --path_coin PATH COIN --path_tr PATH transfo npy --path_graph PATH GRAPH json --path_output PATH OUTPUT -t THRESH --clustered --save-3d
 ```
 `--path_coin` is the path of directories containing the coins. WARNING: It must be meshes in STL format.
-`--path_tr` is the path of the file containing the transformations. It is a npy format `transfo.npy`
+
+`--path_tr` is the path of the file containing the transformations. It is a npy format `transfo.npy`.
+
 `--path_graph` is the path containing the graph. It is a json format `graph.json`
+
 `--path_output` path where the 3d data and images will be stored.
-`-t` threshold of the graph for the clustering (see the effect in the graph visualizer)
-`--clustered` to save file by folder
-`--save_3d` save 3d files (if you do not want to save the 3d files, use instead `--no-save-3d`)
+
+`-t` threshold of the graph for the clustering (see the effect in the graph visualizer).
+
+`--clustered` to save file by folder.
+
+`--save_3d` save 3d files (if you do not want to save the 3d files, use instead `--no-save-3d`).
 
 
 If you find this repo helpful, please cite:

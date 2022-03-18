@@ -110,7 +110,7 @@ vous devriez voir des fichier .pt c'est des fichiers intermédiaires pour aligne
 11) Finaliser le recalage avec l'estimateur
 
 ```
-python scripts/compute_transformation.py --path_feature results/test/feature/  --path_output results/test/transformation --list_coin fichier csv --num_points 5000 --est ransac --clf classifiers/logistic_part_droits_sym.pkl --path_scaler classifiers/mean_std.json --n_jobs 8 --sym
+python scripts/compute_transformation.py --path_feature results/test/feature/  --path_output results/test/transformation --list_coin fichier csv --num_points 5000 --est ransac --n_jobs 8 --sym
 ```
 
 `--path_feature` chemin du dossier qui contient les .pt.
@@ -127,7 +127,7 @@ python scripts/compute_transformation.py --path_feature results/test/feature/  -
 
 Par exemple:
 ```
-python scripts/compute_transformation.py --path_feature results/test/feature/  --path_output results/test/transformation --list_coin /media/sofiane/DATA/sofiane/data/PLY/Part_droits_Riedones3D/ --list_coin /media/sofiane/DATA/sofiane/data/list_coins.csv --num_points 5000 --est ransac --clf classifiers/logistic_part_droits_sym.pkl --path_scaler classifiers/mean_std.json --n_jobs 8 --sym
+python scripts/compute_transformation.py --path_feature results/test/feature/  --path_output results/test/transformation --list_coin /media/sofiane/DATA/sofiane/data/PLY/Part_droits_Riedones3D/ --list_coin /media/sofiane/DATA/sofiane/data/list_coins.csv --num_points 5000 --est ransac --n_jobs 8 --sym
 ```
 
 NB: C'est la partie la plus lente du programme(peut prendre une semaine pour 1000 monnaies). L'ordinateur risque de faire du bruit !!
