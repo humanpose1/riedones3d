@@ -54,7 +54,7 @@ def parse_args():
     parser.add_argument('--save_image', dest='save_image',
                         help='save the images of registration in output directory',
                         action='store_true')
-    parser.add_argument('--np-save_image', dest='save_image',
+    parser.add_argument('--no-save_image', dest='save_image',
                         help='do not save the images of registration in output directory',
                         action='store_false')
     

@@ -5,8 +5,13 @@ import os
 import os.path as osp
 import pathlib
 import glob
+import torch
+
+from torch_geometric.data import Data
 
 from point_cloud.io import read_mesh_vertices
+from point_cloud.visu import torch2o3d
+from point_cloud.pre_transforms import RotateToAxis
 
 def parse_args():
     parser = argparse.ArgumentParser("save coins in point cloud in ply format")
@@ -20,9 +25,23 @@ def parse_args():
                         help='path of the res')
     parser.add_argument("--no-keep-folder", dest="is_keep_folder", help="do we keep the name of the last folders ?", action="store_false")
     parser.add_argument("--keep-folder", dest="is_keep_folder", help="do we keep the name of the last folders ?", action="store_true")
+
+    parser.add_argument("--no-orient_pcd", dest="orient_pcd", help="no orientation using PCA", action="store_false")
+    parser.add_argument("--orient_pcd", dest="orient_pcd", help="orientation using PCA", action="store_true")
+
     parser.set_defaults(is_keep_folder=True)
+    parser.set_defaults(orient_pcd=True)
     args = parser.parse_args()
     return args
+
+def orient_to_z(pcd):
+    orienter = RotateToAxis()
+    data = Data(pos=torch.from_numpy(np.asarray(pcd.points)),
+                norm=torch.from_numpy(np.asarray(pcd.normals))).to(torch.float)
+    data = orienter(data)
+    new_pcd = torch2o3d(data)
+    new_pcd.colors = open3d.utility.Vector3dVector([])
+    return new_pcd
 
 
 def main():
@@ -32,6 +51,9 @@ def main():
         pcd = open3d.geometry.PointCloud()
         pcd.points = open3d.utility.Vector3dVector(vertices)
         pcd.normals = open3d.utility.Vector3dVector(normals)
+        if args.orient_pcd:
+            pcd = orient_to_z(pcd)
+
         path_res_coin, namefile = osp.split(path_coin)
         name = namefile.split(".")[0]
         if args.path_output is not None:

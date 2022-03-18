@@ -25,12 +25,12 @@ class BaseVisualizer(object):
                 pcd.colors = o3d.utility.Vector3dVector(data.dist.cpu().numpy())
             list_pcd.append(pcd)
         if centered:
-            list_pcd = [pcd.translate(pcd.get_center()) for pcd in list_pcd]
+            list_pcd = [pcd.translate(-pcd.get_center()) for pcd in list_pcd]
             list_pcd[-1] = list_pcd[-1].translate(np.array([self.translate, 0, 0]))
         return list_pcd
 
     def visualize(self, list_data, name: str = "", centered: bool = False, **kwargs):
-        pass
+        print(name)
 
     def visualize_hist(self, hist, bin_edges , name, **kwargs):
         pass
