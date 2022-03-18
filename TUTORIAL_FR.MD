@@ -26,8 +26,8 @@ cd /home/sofiane/Documents/riedones3d
 Si vous tapez `ls`, vous devez voir quelques chose comme:
 % capture d'écran des dossiers
 
-5) convertir vos mesh STL en PLY avec ce script
-voici un script qui permet de convertir des stl ie des mesh en nuage de points ply
+5) convertir vos mesh (STL ou PLY) en nuages de points PLY avec ce script
+voici un script qui permet de convertir des mesh (stl ou ply) en nuage de points ply
 
 ```
 python scripts/mesh2pcd.py --path_coin mymesh.stl -o endroit où les ply sont sauvegardées
@@ -41,7 +41,7 @@ pour en traiter plusieurs:
 ```
 python scripts/mesh2pcd.py  --path_coin /media/sofiane/DATA/sofiane/data/Part_droits_Riedones3D/*.STL -o /media/sofiane/DATA/sofiane/data/PLY/
 ```
-NOTE: le *.STL permet de selectionner tous les STL d'un dossier
+NOTE: le *.STL permet de selectionner tous les STL d'un dossier. 
 ATTENTION: les monnaies ou autres motifs doivent être orienté selon l'axe z. 
 
 ## Comparaison deux à deux
