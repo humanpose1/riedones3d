@@ -56,3 +56,11 @@ def read_pcd(filename):
     batch = torch.zeros(len(pos)).long()
     data = Batch(pos=pos, norm=norm, batch=batch).to(torch.float)
     return data
+
+def read_mesh(filename):
+    fuze_trimesh = trimesh.load(filename)
+    pos = torch.from_numpy(fuze_trimesh.vertices).float()
+    norm = torch.from_numpy(fuze_trimesh.vertex_normals).float()
+    faces = torch.from_numpy(fuze_trimesh.faces).long()
+    data = Data(pos=pos, norm=norm, faces=faces)
+    return data

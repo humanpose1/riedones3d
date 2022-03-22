@@ -117,7 +117,7 @@ it will generate two files:
 
 We compute the graph of similarity between the pairs of coins
 ```
-python scripts/compute_graph_from_hist.py --path_histogram results/Droits/transformation/hist.npy -m classifiers/logistic_part_droits_sym.pkl -o results/Droits/graph --path_scaler classifiers/mean_std.json
+python scripts/compute_graph_from_hist.py --path_histogram results/Droits/transformation/hist.npy --path_clf classifiers/logistic_part_droits_sym.pkl --path_output results/Droits/graph --path_scaler classifiers/mean_std.json
 ```
 ### Clean the graph using graph visualizer
 
@@ -130,7 +130,7 @@ You can use the script render_coins in order to render images (require trimesh, 
 ```
 python scripts/render_coins.py --path_coin PATH COIN --path_tr PATH transfo npy --path_graph PATH GRAPH json --path_output PATH OUTPUT -t THRESH --clustered --save-3d
 ```
-`--path_coin` is the path of directories containing the coins. WARNING: It must be meshes in STL format.
+`--path_coin` is the path of directories containing the coins. WARNING: It must be meshes.
 
 `--path_tr` is the path of the file containing the transformations. It is a npy format `transfo.npy`.
 

@@ -26,8 +26,8 @@ cd /home/sofiane/Documents/riedones3d
 Si vous tapez `ls`, vous devez voir quelques chose comme:
 % capture d'écran des dossiers
 
-5) convertir vos mesh (STL ou PLY) en nuages de points PLY avec ce script
-voici un script qui permet de convertir des mesh (stl ou ply) en nuage de points ply
+5) convertir vos mesh (STL ou PLY) en mesh PLY avec les normales et orienté selon l'axe z avec ce script.
+voici un script qui permet de convertir des mesh (stl ou ply)
 
 ```
 python scripts/mesh2pcd.py --path_coin mymesh.stl -o endroit où les ply sont sauvegardées
@@ -42,7 +42,7 @@ pour en traiter plusieurs:
 python scripts/mesh2pcd.py  --path_coin /media/sofiane/DATA/sofiane/data/Part_droits_Riedones3D/*.STL -o /media/sofiane/DATA/sofiane/data/PLY/
 ```
 NOTE: le *.STL permet de selectionner tous les STL d'un dossier. 
-ATTENTION: les monnaies ou autres motifs doivent être orienté selon l'axe z. 
+ATTENTION: les monnaies ou autres motifs vont être orienté selon l'axe z. 
 
 ## Comparaison deux à deux
 6) Supposons nous voulons savoir si deux monnaies ont été frappées avec le même coin. le scripts `whole_pipeline.py` permet de voir toutes les étapes de la comparaison.
@@ -51,7 +51,7 @@ Maintenant, nous pouvons appliquer le script.
 python scripts/whole_pipeline.py --path COIN1.ply COIN2.ply -m PATH OF THE MODEL --angle 0 --trans 20  --clf classifiers/logistic_part_droits_sym.pkl --path_scaler classifiers/mean_std.json --est ransac
 ```
 
-`--path` il faut indiquer les chemins des deux monnaies (ATTENTION les monnaies doivent être des nuages de points aux format ply) (IMPORTANT)
+`--path` il faut indiquer les chemins des deux monnaies (stl ou ply) (IMPORTANT)
 
 `-m` le chemin du modèle, c'est le réseau de neurones à charger !!! (IMPORTANT)
 
@@ -60,7 +60,7 @@ python scripts/whole_pipeline.py --path COIN1.ply COIN2.ply -m PATH OF THE MODEL
 `--clf` c'est un classifieur ie un outil qui permet de prendre la desision à partir des info calculées précédemment. lui donner un format .pkl(modèle statistique)  (IMPORTANT)
 `--path_scaler` json qui contient des valeurs importantes pour le classifieur format .json (IMPORTANT)
 
-`--est` c'est l'estimateur (laisser ransac)
+`--est` c'est l'estimateur (ransac ou teaser)
 
 Par exemple:
 ```
@@ -142,17 +142,17 @@ normalement vous devriez voir deux fichiers `hist.npy`  `transfo.npy`  et un dos
 
 12) Maintenant, vous pouvez créer le graphe de similarité
 ```
-python scripts/compute_graph_from_hist.py --path_histogram le fichier hist.npy -m classifiers/logistic_part_droits_sym.pkl -o results/test/graph --path_scaler classifiers/mean_std.json
+python scripts/compute_graph_from_hist.py --path_histogram le fichier hist.npy --clf classifiers/logistic_part_droits_sym.pkl --path_output results/test/graph --path_scaler classifiers/mean_std.json
 ```
 
 `--path_histogram` c'est le chemin vers le fichier hist.npy qu'on a vu précédemment.
-`-m` c'est le classifieur .plk
+`--clf` c'est le classifieur .plk
 `--path_scaler` json qui contient des valeurs importantes pour le classifieur format .json (IMPORTANT)
-`-o` c'est la sortie
+`--path_output` c'est le dossier où on sauvegarde la sortie du script qui est le graphe de correspondance
 
 par exemple
 ```
-python scripts/compute_graph_from_hist.py --path_histogram results/test/transformation/hist.npy -m classifiers/logistic_part_droits_sym.pkl -o results/test/graph --path_scaler classifiers/mean_std.json
+python scripts/compute_graph_from_hist.py --path_histogram results/test/transformation/hist.npy --path_clf classifiers/logistic_part_droits_sym.pkl --path_output results/test/graph --path_scaler classifiers/mean_std.json
 ```
 
 13) visualiser le graph avec graph_visualiser

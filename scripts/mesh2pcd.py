@@ -9,12 +9,12 @@ import torch
 
 from torch_geometric.data import Data
 
-from point_cloud.io import read_mesh_vertices
+from point_cloud.io import read_mesh
 from point_cloud.visu import torch2o3d
 from point_cloud.pre_transforms import RotateToAxis
 
 def parse_args():
-    parser = argparse.ArgumentParser("save coins in point cloud in ply format")
+    parser = argparse.ArgumentParser("save coins in ply format (orient it)")
 
     parser.add_argument('--path_coin',
                         dest='path_coin',
@@ -34,26 +34,26 @@ def parse_args():
     args = parser.parse_args()
     return args
 
-def orient_to_z(pcd):
+def orient_to_z(data):
     orienter = RotateToAxis()
-    data = Data(pos=torch.from_numpy(np.asarray(pcd.points)),
-                norm=torch.from_numpy(np.asarray(pcd.normals))).to(torch.float)
     data = orienter(data)
-    new_pcd = torch2o3d(data)
-    new_pcd.colors = open3d.utility.Vector3dVector([])
-    return new_pcd
+    return data
+
+def torch2mesh(data):
+    mesh = open3d.geometry.TriangleMesh()
+    mesh.vertices = open3d.utility.Vector3dVector(data.pos.detach().cpu().numpy())
+    mesh.vertex_normals = open3d.utility.Vector3dVector(data.norm.detach().cpu().numpy())
+    mesh.triangles = open3d.utility.Vector3iVector(data.faces.detach().cpu().numpy())
+    return mesh
 
 
 def main():
     args = parse_args()
     for path_coin in args.path_coin:
-        vertices, normals = read_mesh_vertices(path_coin)
-        pcd = open3d.geometry.PointCloud()
-        pcd.points = open3d.utility.Vector3dVector(vertices)
-        pcd.normals = open3d.utility.Vector3dVector(normals)
+        data = read_mesh(path_coin)
         if args.orient_pcd:
-            pcd = orient_to_z(pcd)
-
+            data = orient_to_z(data)
+        pcd = torch2mesh(data)
         path_res_coin, namefile = osp.split(path_coin)
         name = namefile.split(".")[0]
         if args.path_output is not None:
@@ -64,7 +64,7 @@ def main():
                 path_res_coin = args.path_output
             pathlib.Path(path_res_coin).mkdir(exist_ok=True, parents=True)
         filename = osp.join(path_res_coin, name + ".ply")
-        open3d.io.write_point_cloud(filename, pcd)
+        open3d.io.write_triangle_mesh(filename, pcd)
 
 
 if __name__ == "__main__":
