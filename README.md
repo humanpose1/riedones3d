@@ -70,11 +70,12 @@ cd python && pip install .
 The Riedones3D dataset is available on the [website](https://npm3d.fr/coins-riedones3d).
 
 ## Preprocessing
-As input, we need point cloud in ply format. We propose a simple script to convert from stl to ply with normals(if you already have point cloud in ply, you do not need this step).
+As input, we need ply format. We propose a simple script to convert from stl to ply with normals.
 
 ```
-python scripts/mesh2pcd.py --path_coin mymesh.stl
+python scripts/preprocessing.py --path_coin mymesh.stl
 ```
+this script orients the point cloud with respect to the z axis. Also it can apply a scale
 
 ## Register a pair of coin
 ![Pipeline](screenshot/pipeline.png "Pipeline to registrate a coin")

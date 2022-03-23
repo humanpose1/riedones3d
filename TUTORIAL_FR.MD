@@ -30,19 +30,20 @@ Si vous tapez `ls`, vous devez voir quelques chose comme:
 voici un script qui permet de convertir des mesh (stl ou ply)
 
 ```
-python scripts/mesh2pcd.py --path_coin mymesh.stl -o endroit où les ply sont sauvegardées
+python scripts/preprocessing.py --path_coin mymesh.stl -o endroit où les ply sont sauvegardées
 ```
 Pour faire une conversion (par exemple la L0082D):
 ```
-python scripts/mesh2pcd.py  --path_coin /media/sofiane/DATA/sofiane/data/Part_droits_Riedones3D/L0082D.STL -o /media/sofiane/DATA/sofiane/data/PLY/
+python scripts/preprocessing.py  --path_coin /media/sofiane/DATA/sofiane/data/Part_droits_Riedones3D/L0082D.STL -o /media/sofiane/DATA/sofiane/data/PLY/
 ```
 
 pour en traiter plusieurs:
 ```
-python scripts/mesh2pcd.py  --path_coin /media/sofiane/DATA/sofiane/data/Part_droits_Riedones3D/*.STL -o /media/sofiane/DATA/sofiane/data/PLY/
+python scripts/preprocessing.py  --path_coin /media/sofiane/DATA/sofiane/data/Part_droits_Riedones3D/*.STL -o /media/sofiane/DATA/sofiane/data/PLY/
 ```
 NOTE: le *.STL permet de selectionner tous les STL d'un dossier. 
 ATTENTION: les monnaies ou autres motifs vont être orienté selon l'axe z. 
+Il est possible de rajouter un scale en modifiant le paramètre `--scale 1.5`
 
 ## Comparaison deux à deux
 6) Supposons nous voulons savoir si deux monnaies ont été frappées avec le même coin. le scripts `whole_pipeline.py` permet de voir toutes les étapes de la comparaison.
@@ -62,15 +63,12 @@ python scripts/whole_pipeline.py --path COIN1.ply COIN2.ply -m PATH OF THE MODEL
 
 `--est` c'est l'estimateur (ransac ou teaser)
 
+`--path_output` endroit où on sauvegarde des captures d'écran des résultats (optionel)
+
 Par exemple:
 ```
 python scripts/whole_pipeline.py --path /media/sofiane/DATA/sofiane/data/PLY/Part_droits_Riedones3D/L0093D.ply /media/sofiane/DATA/sofiane/data/PLY/Part_droits_Riedones3D/L0098D.ply -m /media/sofiane/DATA/sofiane/data/benchmark-MinkUNet_Fragment-20210429_193357/MinkUNet_Fragment.pt --angle 0 --trans 20  --clf classifiers/logistic_part_droits_sym.pkl --path_scaler classifiers/mean_std.json --est ransac
 ```
-
-% capture écran du script
-
-% capture écran des différents résultats
-
 
 
 ## Que faire si nous voulons faire le classement de plusieurs monnaies ?
