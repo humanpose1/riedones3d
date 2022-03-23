@@ -28,7 +28,19 @@ class RotateToAxis(object):
         return data
 
     def __repr__(self):
-        return f"OrientPointCloud(axis_3d={self.axis_3d})"
+        return f"RotateToAxis(axis_3d={self.axis_3d})"
+
+class FixedScale(object):
+
+    def __init__(self, scale: float = 1.0):
+        self.scale = scale
+
+    def __call__(self, data: Data, **kwargs):
+        data.pos = data.pos * self.scale
+        return data
+
+    def __repr__(self):
+        return f"FixedScale(scale={self.scale})"
 
 
 class BendingByPolynomialRegression(object):
