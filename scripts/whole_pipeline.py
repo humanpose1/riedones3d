@@ -65,7 +65,7 @@ def main():
     clf = HistClassifier(args.path_clf, args.path_scaler)
     pipeline.compute_all(list_path)
     clf.compute_graph(pipeline.get_dico_histogram())
-    if args.path_output is None:
+    if args.path_output is not None:
         clf.save_graph(args.path_output)
 
 if __name__ == "__main__":
