@@ -11,7 +11,7 @@ from torch_geometric.data import Data
 
 from point_cloud.io import read_mesh
 from point_cloud.visu import torch2o3d
-from point_cloud.pre_transforms import RotateToAxis, FixedScale
+from point_cloud.pre_transforms import RotateToAxis, FixedScale, AnisotropicScale
 
 def parse_args():
     parser = argparse.ArgumentParser("save coins in ply format (orient it)")
@@ -23,7 +23,9 @@ def parse_args():
     parser.add_argument('-o',
                         dest='path_output',
                         help='path of the res')
-    parser.add_argument('--scale', dest="scale", help="scale for the coins", default=1.0, type=float)
+    parser.add_argument('--scale', dest="scale",
+    help="scale for the coins",
+    default=[1.0, 1.0, 1.0], nargs=3, type=float)
     parser.add_argument("--no-keep-folder", dest="is_keep_folder", help="do we keep the name of the last folders ?", action="store_false")
     parser.add_argument("--keep-folder", dest="is_keep_folder", help="do we keep the name of the last folders ?", action="store_true")
 
@@ -49,7 +51,7 @@ def main():
         data = read_mesh(path_coin)
         if args.orient_pcd:
             data = RotateToAxis()(data)
-        data = FixedScale(scale=args.scale)(data)
+        data = AnisotropicScale(*args.scale)(data)
         pcd = torch2mesh(data)
         path_res_coin, namefile = osp.split(path_coin)
         name = namefile.split(".")[0]

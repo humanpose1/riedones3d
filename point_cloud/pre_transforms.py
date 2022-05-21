@@ -42,6 +42,18 @@ class FixedScale(object):
     def __repr__(self):
         return f"FixedScale(scale={self.scale})"
 
+class AnisotropicScale(object):
+    def __init__(self, scale_x: float = 1.0, scale_y: float = 1.0, scale_z: float = 1.0) -> None:
+        self.scale_x = scale_x
+        self.scale_y = scale_y
+        self.scale_z = scale_z
+
+    def __call__(self, data: Data, **kwds) -> Data:
+        data.pos = data.pos @ torch.diag(torch.tensor([self.scale_x, self.scale_y, self.scale_z]))
+        return data
+        
+        
+
 
 class BendingByPolynomialRegression(object):
     """
