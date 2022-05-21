@@ -76,6 +76,10 @@ As input, we need ply format. We propose a simple script to convert from stl to 
 python scripts/preprocessing.py --path_coin mymesh.stl
 ```
 this script orients the point cloud with respect to the z axis. Also it can apply a scale
+if you want to apply anisotropic scale(scale only the z axis)
+```
+python scripts/preprocessing.py --path_coin mymesh.stl --scale 1.0 1.0 2.0
+```
 
 ## Register a pair of coin
 ![Pipeline](screenshot/pipeline.png "Pipeline to registrate a coin")
